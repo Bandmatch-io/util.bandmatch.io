@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Bandmatch.io/util.bandmatch.io/db"
-	"github.com/Bandmatch.io/util.bandmatch.io/log"
+	"github.com/Bandmatch-io/util.bandmatch.io/db"
+	"github.com/Bandmatch-io/util.bandmatch.io/log"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
