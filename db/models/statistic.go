@@ -8,7 +8,7 @@ import (
 
 type Statistic struct {
 	ID           primitive.ObjectID  `bson:"_id" json:"_id"`
-	Date         time.Time           `bson:"date" json:"date`
+	Date         time.Time           `bson:"date" json:"date"`
 	MessagesSent int                 `bson:"messagesSent" json:"messagesSent"`
 	Logins       int                 `bson:"logins" json:"logins"`
 	Signups      int                 `bson:"signups" json:"signups"`
