@@ -70,17 +70,13 @@ func InsertOne(collection string, document interface{}) (primitive.ObjectID, err
 	return id, nil
 }
 
-func UpdateOne(collection string, filter Query, update Query) error {
+func UpdateOne(collection string, filter Query, update Query) (int64, error) {
 	res, err := bandmatchDB.Collection(collection).UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		return fmt.Errorf("could not update document: %v", err)
+		return 0, fmt.Errorf("could not update document: %v", err)
 	}
 
-	if res.MatchedCount == 0 && res.ModifiedCount == 0 {
-		return fmt.Errorf("did not update document for an unspecified reason")
-	}
-
-	return nil
+	return res.ModifiedCount, nil
 }
 
 func UpsertOne(collection string, filter Query, update Query) error {
