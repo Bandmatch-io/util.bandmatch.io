@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Bandmatch-io/util.bandmatch.io/log"
+	"bandmatch.io/alerts/log"
 )
 
 var (
@@ -17,6 +17,7 @@ const (
 	RequestPasswordID = 1
 	NewUserID         = 2
 	VerifyUserID      = 3
+	NearbyUserID      = 4
 )
 
 type mail struct {
@@ -57,7 +58,7 @@ func makeRequest(m mail) error {
 	url := fmt.Sprintf("http://%v:%v/email/send?pl=%v&rp=%v&mt=%v", Host, Port, m.payload, m.recipient, m.messageType)
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
-		return fmt.Errorf("could not make post request: %v", err)
+		return fmt.Errorf("could not make post request")
 	}
 
 	if resp.StatusCode != 202 {
