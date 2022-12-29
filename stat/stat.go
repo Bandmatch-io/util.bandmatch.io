@@ -14,27 +14,29 @@ var (
 
 // stat enum
 const (
-	Signups      = 0
-	Logins       = 1
-	MessagesSent = 2
-	Searches     = 3
-	RootViews    = 4
-	ProfileViews = 5
-	Reports      = 6
-	ServerErrors = 7
-	UserErrors   = 8
+	Signups            = 0
+	Logins             = 1
+	MessagesSent       = 2
+	Searches           = 3
+	RootViews          = 4
+	ProfileViews       = 5
+	Reports            = 6
+	ServerErrors       = 7
+	UserErrors         = 8
+	UnauthorizedErrors = 9
 )
 
 var enumStatLookup = map[int]string{
-	Signups:      "signups",
-	Logins:       "logins",
-	MessagesSent: "messagesSent",
-	Searches:     "searches",
-	RootViews:    "rootViews",
-	ProfileViews: "profileViews",
-	Reports:      "reports",
-	ServerErrors: "serverErrors",
-	UserErrors:   "userErrors",
+	Signups:            "signups",
+	Logins:             "logins",
+	MessagesSent:       "messagesSent",
+	Searches:           "searches",
+	RootViews:          "rootViews",
+	ProfileViews:       "profileViews",
+	Reports:            "reports",
+	ServerErrors:       "serverErrors",
+	UserErrors:         "userErrors",
+	UnauthorizedErrors: "unauthorizedErrors",
 }
 
 var (

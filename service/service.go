@@ -43,7 +43,7 @@ func CreateHandler(path string, handler HandlerFunc, method string, requireLogin
 			if err != nil {
 				log.Msgf(0, "received request with invalid user, err: %v", err)
 				w.WriteHeader(http.StatusUnauthorized)
-				stat.Atomic(stat.UserErrors)
+				stat.Atomic(stat.UnauthorizedErrors)
 				w.Write([]byte(`{"success":false,"error":{"login":{"absent":true}}}`))
 				return
 			}
@@ -99,7 +99,7 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 		if err != nil {
 			log.Msgf(0, "received request with invalid user, err: %v", err)
 			w.WriteHeader(http.StatusUnauthorized)
-			stat.Atomic(stat.UserErrors)
+			stat.Atomic(stat.UnauthorizedErrors)
 			w.Write([]byte(`{"success":false,"error":{"login":{"absent":true}}}`))
 			return
 		}
@@ -118,7 +118,7 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 		if !user.Admin {
 			log.Msgf(log.VVV, "received request from non admin user")
 			w.WriteHeader(http.StatusUnauthorized)
-			stat.Atomic(stat.UserErrors)
+			stat.Atomic(stat.UnauthorizedErrors)
 			w.Write([]byte(`{"success":false,"error":{"login":{"unauthorized":true}}}`))
 			return
 		}
