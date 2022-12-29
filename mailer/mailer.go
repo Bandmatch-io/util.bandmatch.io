@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"bandmatch.io/alerts/log"
+	"github.com/Bandmatch-io/util.bandmatch.io/log"
 )
 
 var (
