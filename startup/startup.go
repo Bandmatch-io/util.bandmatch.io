@@ -42,7 +42,7 @@ func Go(serviceName string) error {
 	if err != nil {
 		return fmt.Errorf("Could not find service with serviceName[%v]: %v", serviceName, err)
 	}
-	log.Msgf(log.V, "found startup information for [%v-%v:v%v]", svc.ID, svc.ServiceName, svc.Version)
+	log.Msgf(log.V, "found startup information for [%v-%v:v%v]", svc.ID.Hex(), svc.ServiceName, svc.Version)
 	log.Msgf(2, "Startup information: [%v]", svc)
 
 	newArgs := []string{os.Args[0]}
