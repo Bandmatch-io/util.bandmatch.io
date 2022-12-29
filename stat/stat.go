@@ -42,6 +42,7 @@ var enumStatLookup = map[int]string{
 var (
 	atomicQueue chan int
 	timerQueue  chan timeData
+	errorQueue  chan errorData
 	closeQueue  chan struct{}
 	done        chan struct{}
 )
@@ -50,10 +51,15 @@ type timeData struct {
 	endpoint string
 	ms       int64
 }
+type errorData struct {
+	message string
+	origin  string
+}
 
 func Start() {
 	atomicQueue = make(chan int, 5)
 	timerQueue = make(chan timeData, 5)
+	errorQueue = make(chan errorData, 5)
 	done = make(chan struct{})
 	closeQueue = make(chan struct{})
 	log.Msgf(log.V, "starting stat service")
@@ -120,16 +126,35 @@ func makeTimerRequest(stat timeData) error {
 	return nil
 }
 
+func makeErrorRequest(stat errorData) error {
+	url := fmt.Sprintf("http://%v/stats/error?msg=%v&or=%v", Address, stat.message, stat.origin)
+	resp, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		return fmt.Errorf("could not make post request: %v", err)
+	}
+
+	if resp.StatusCode != 202 {
+		return fmt.Errorf("did not receive 202 response")
+	}
+
+	return nil
+}
+
 // Atomic sends a request to update a statistic
 func Atomic(val int) {
 	atomicQueue <- val
+}
+
+// Error sends a request to record an error
+func Error(err error, method string, endpoint string) {
+	errorQueue <- errorData{err.Error(), fmt.Sprintf("[%v]-%v", method, endpoint)}
 }
 
 func timer(ep string, val int64) {
 	timerQueue <- timeData{ep, val}
 }
 
-// RecordTime starts a timer, and returns a function to stop it. Once stopped the timer will
+// StartTimer starts a timer, and returns a function to stop it. Once stopped the timer will
 // send time data to the server.
 func StartTimer(endpoint string) func() {
 	start := time.Now()

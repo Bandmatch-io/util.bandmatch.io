@@ -20,6 +20,7 @@ type Statistic struct {
 	UserErrors   int                 `bson:"userErrors" json:"userErrors"`
 	MatchCount   MatchCount          `bson:"matchCount" json:"matchCount"`
 	Timing       map[string]TimeData `bson:"endpointTiming" json:"endpointTiming"`
+	Errors       []ErrorInfo         `bson:"errors" json:"errors"`
 }
 
 type MatchCount struct {
@@ -30,6 +31,12 @@ type MatchCount struct {
 type Referrer struct {
 	URL   string `bson:"url" json:"url"`
 	Count int    `bson:"count" json:"count"`
+}
+
+type ErrorInfo struct {
+	Message   string    `bson:"message" json:"message"`
+	Origin    string    `bson:"origin" json:"origin"`
+	Timestamp time.Time `bson:"timestamp" json:"timestamp"`
 }
 
 type TimeData struct {
@@ -45,6 +52,7 @@ func NewStatistic() Statistic {
 		Date:      time.Now(),
 		Timing:    map[string]TimeData{},
 		Referrers: []Referrer{},
+		Errors:    []ErrorInfo{},
 	}
 
 	return newStat

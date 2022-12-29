@@ -88,6 +88,7 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 			log.Msgf(log.VVV, "received request with invalid method")
 			stat.Atomic(stat.UserErrors)
 			w.WriteHeader(http.StatusMethodNotAllowed)
+			stat.Error(fmt.Errorf("received request with invalid method"), req.Method, path)
 			return
 		}
 
@@ -126,6 +127,7 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 		status, body, err := handler(w, req, uid)
 		if err != nil {
 			level := 0
+			stat.Error(err, req.Method, path)
 			if status != 500 {
 				level = 2
 				stat.Atomic(stat.ServerErrors)
