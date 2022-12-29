@@ -37,9 +37,11 @@ type User struct {
 		Timestamp time.Time `bson:"timestamp" json:"-"`
 	} `bson:"passReset"  json:"-"`
 	Timestamps struct {
-		LastLogin time.Time `bson:"last_login" json:"last_login"`
-		SignupAt  time.Time `bson:"signup_at" json:"signup_at"`
+		LastLogin   time.Time `bson:"last_login" json:"last_login"`
+		SignupAt    time.Time `bson:"signup_at" json:"signup_at"`
+		LastUpdated time.Time `bson:"last_updated" json:"-"`
 	} `bson:"timestamps" json:"timestamps"`
+	AudioURL string `bson:"audioURL" json:"audioURL"`
 }
 
 func NewUser(email string, name string, passHash string, confirmString string) User {
