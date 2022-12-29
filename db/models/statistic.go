@@ -7,20 +7,21 @@ import (
 )
 
 type Statistic struct {
-	ID           primitive.ObjectID  `bson:"_id" json:"_id"`
-	Date         time.Time           `bson:"date" json:"date"`
-	MessagesSent int                 `bson:"messagesSent" json:"messagesSent"`
-	Logins       int                 `bson:"logins" json:"logins"`
-	Signups      int                 `bson:"signups" json:"signups"`
-	Searches     int                 `bson:"searches" json:"searches"`
-	RootViews    int                 `bson:"rootViews" json:"rootViews"`
-	Referrers    []Referrer          `bson:"referrers" json:"referrers"`
-	Reports      int                 `bson:"reports" json:"reports"`
-	ServerErrors int                 `bson:"serverErrors" json:"serverErrors"`
-	UserErrors   int                 `bson:"userErrors" json:"userErrors"`
-	MatchCount   MatchCount          `bson:"matchCount" json:"matchCount"`
-	Timing       map[string]TimeData `bson:"endpointTiming" json:"endpointTiming"`
-	Errors       []ErrorInfo         `bson:"errors" json:"errors"`
+	ID                 primitive.ObjectID  `bson:"_id" json:"_id"`
+	Date               time.Time           `bson:"date" json:"date"`
+	MessagesSent       int                 `bson:"messagesSent" json:"messagesSent"`
+	Logins             int                 `bson:"logins" json:"logins"`
+	Signups            int                 `bson:"signups" json:"signups"`
+	Searches           int                 `bson:"searches" json:"searches"`
+	RootViews          int                 `bson:"rootViews" json:"rootViews"`
+	Referrers          []Referrer          `bson:"referrers" json:"referrers"`
+	Reports            int                 `bson:"reports" json:"reports"`
+	ServerErrors       int                 `bson:"serverErrors" json:"serverErrors"`
+	UserErrors         int                 `bson:"userErrors" json:"userErrors"`
+	UnauthorizedErrors int                 `bson:"unauthorizedErrors" json:"unauthorizedErrors"`
+	MatchCount         MatchCount          `bson:"matchCount" json:"matchCount"`
+	Timing             map[string]TimeData `bson:"endpointTiming" json:"endpointTiming"`
+	Errors             []ErrorInfo         `bson:"errors" json:"errors"`
 }
 
 type MatchCount struct {
@@ -47,9 +48,13 @@ type TimeData struct {
 }
 
 func NewStatistic() Statistic {
+	date := time.Now()
+	strDate := date.Format("02-01-2006")
+	date, _ = time.Parse("02-01-2006", strDate)
+
 	newStat := Statistic{
 		ID:        primitive.NewObjectID(),
-		Date:      time.Now(),
+		Date:      date,
 		Timing:    map[string]TimeData{},
 		Referrers: []Referrer{},
 		Errors:    []ErrorInfo{},

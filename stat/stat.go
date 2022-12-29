@@ -45,6 +45,7 @@ var (
 	errorQueue  chan errorData
 	closeQueue  chan struct{}
 	done        chan struct{}
+	open        bool
 )
 
 type timeData struct {
@@ -65,6 +66,7 @@ func Start() {
 	log.Msgf(log.V, "starting stat service")
 
 	go func() {
+		open = true
 		for {
 			select {
 			case val := <-atomicQueue:
@@ -84,6 +86,12 @@ func Start() {
 				if err != nil {
 					log.Msgf(log.V, "could not send time data to server: %v", err)
 				}
+			case val := <-errorQueue:
+				log.Msg(log.VV, "sending error info to server")
+				err := makeErrorRequest(val)
+				if err != nil {
+					log.Msgf(log.V, "could not send error data to server: %v", err)
+				}
 			case <-closeQueue:
 				close(done)
 				return
@@ -96,6 +104,7 @@ func Close() {
 	log.Msgf(log.V, "closing stat service")
 	closeQueue <- struct{}{}
 	<-done
+	open = false
 }
 
 func makeAtomicRequest(stat string) error {
@@ -142,15 +151,28 @@ func makeErrorRequest(stat errorData) error {
 
 // Atomic sends a request to update a statistic
 func Atomic(val int) {
+	if !open {
+		log.Msgf(1, "stat package is not running!!! will not send atomic!!!")
+		return
+	}
+
 	atomicQueue <- val
 }
 
 // Error sends a request to record an error
 func Error(err error, method string, endpoint string) {
+	if !open {
+		log.Msgf(1, "stat package is not running!!! will not send error data!!!")
+		return
+	}
 	errorQueue <- errorData{err.Error(), fmt.Sprintf("[%v]-%v", method, endpoint)}
 }
 
 func timer(ep string, val int64) {
+	if !open {
+		log.Msgf(1, "stat package is not running!!! will not send time data!!!")
+		return
+	}
 	timerQueue <- timeData{ep, val}
 }
 
