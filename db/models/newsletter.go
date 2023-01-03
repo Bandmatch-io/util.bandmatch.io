@@ -11,6 +11,7 @@ type Newsletter struct {
 	Delivered  bool               `bson:"delivered" json:"delivered"`
 	Content    string             `bson:"content" json:"content"`
 	Markdown   string             `bson:"markdown" json:"markdown"`
+	Title      string             `bson:"title" json:"title"`
 	Timestamps struct {
 		Created      time.Time `bson:"created" json:"created"`
 		Edited       time.Time `bson:"edited" json:"edited"`
@@ -18,12 +19,13 @@ type Newsletter struct {
 	} `bson:"timestamps" json:"timestamps"`
 }
 
-func NewNewsletter(content string, markdown string, deliveryTime time.Time) Newsletter {
+func NewNewsletter(content string, markdown string, title string, deliveryTime time.Time) Newsletter {
 	nl := Newsletter{
 		ID:        primitive.NewObjectID(),
 		Delivered: false,
 		Content:   content,
 		Markdown:  markdown,
+		Title:     title,
 	}
 
 	nl.Timestamps.Created = time.Now()
