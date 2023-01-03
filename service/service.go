@@ -52,11 +52,12 @@ func CreateHandler(path string, handler HandlerFunc, method string, requireLogin
 
 		status, body, err := handler(w, req, uid)
 		if err != nil {
-			level := 0
-			if status != 500 {
-				level = 2
+			stat.Error(err, req.Method, path)
+			level := 2
+			if status == http.StatusInternalServerError {
+				level = 0
 				stat.Atomic(stat.ServerErrors)
-			} else {
+			} else if status != http.StatusOK && status != http.StatusAccepted {
 				stat.Atomic(stat.UserErrors)
 			}
 			log.Msgf(level, "encountered request error: [%v]", err)
@@ -124,14 +125,14 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 			return
 		}
 
-		status, body, err := handler(w, req, uid)
+		status, body, err := handler(w, req, primitive.ObjectID{})
 		if err != nil {
-			level := 0
 			stat.Error(err, req.Method, path)
-			if status != 500 {
-				level = 2
+			level := 2
+			if status == http.StatusInternalServerError {
+				level = 0
 				stat.Atomic(stat.ServerErrors)
-			} else {
+			} else if status != http.StatusOK && status != http.StatusAccepted {
 				stat.Atomic(stat.UserErrors)
 			}
 			log.Msgf(level, "encountered request error: [%v]", err)
