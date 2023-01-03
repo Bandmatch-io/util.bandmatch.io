@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Bandmatch-io/util.bandmatch.io/log"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var (
@@ -70,4 +71,18 @@ func makeRequest(m mail) error {
 
 func Queue(emailType int, recipient string, payload string) {
 	mailQueue <- mail{recipient: recipient, payload: payload, messageType: emailType}
+}
+
+func MakeNewsletterRequest(id primitive.ObjectID) error {
+	url := fmt.Sprintf("http://%v:%v/email/newsletter?id=%v", Host, Port, id.Hex())
+	resp, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		return fmt.Errorf("could not make post request")
+	}
+
+	if resp.StatusCode != 202 {
+		return fmt.Errorf("did not receive 202 response")
+	}
+
+	return nil
 }

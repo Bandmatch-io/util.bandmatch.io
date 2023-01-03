@@ -57,6 +57,27 @@ func FindMany(collection string, query Query, decoded interface{}) error {
 	return nil
 }
 
+func FindManyAndSort(collection string, query Query, decoded interface{}, sort Fields) error {
+	findOptions := options.Find()
+	findOptions.SetSort(sort)
+	cursor, err := bandmatchDB.Collection(collection).Find(context.TODO(), query, findOptions)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil
+		}
+
+		return err
+	}
+
+	defer cursor.Close(context.TODO())
+	err = cursor.All(context.TODO(), decoded)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func InsertOne(collection string, document interface{}) (primitive.ObjectID, error) {
 	res, err := bandmatchDB.Collection(collection).InsertOne(context.TODO(), document)
 	if err != nil {
