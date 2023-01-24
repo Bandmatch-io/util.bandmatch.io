@@ -81,7 +81,7 @@ func MakeNewsletterRequest(id primitive.ObjectID) error {
 	}
 
 	if resp.StatusCode != 202 {
-		return fmt.Errorf("did not receive 202 response, received [%v] instead", resp.StatusCode)
+		return fmt.Errorf("did not receive 202 response for [POST %v], received [%v] instead", url, resp.StatusCode)
 	}
 
 	return nil
