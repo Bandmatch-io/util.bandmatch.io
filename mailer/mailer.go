@@ -59,11 +59,11 @@ func makeRequest(m mail) error {
 	url := fmt.Sprintf("http://%v:%v/email/send?pl=%v&rp=%v&mt=%v", Host, Port, m.payload, m.recipient, m.messageType)
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
-		return fmt.Errorf("could not make post request")
+		return fmt.Errorf("could not make post request: %v", err)
 	}
 
 	if resp.StatusCode != 202 {
-		return fmt.Errorf("did not receive 202 response")
+		return fmt.Errorf("did not receive 202 response, received [%v] instead", resp.StatusCode)
 	}
 
 	return nil
@@ -77,11 +77,11 @@ func MakeNewsletterRequest(id primitive.ObjectID) error {
 	url := fmt.Sprintf("http://%v:%v/email/newsletter?id=%v", Host, Port, id.Hex())
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
-		return fmt.Errorf("could not make post request")
+		return fmt.Errorf("could not make post request: %v", err)
 	}
 
 	if resp.StatusCode != 202 {
-		return fmt.Errorf("did not receive 202 response")
+		return fmt.Errorf("did not receive 202 response, received [%v] instead", resp.StatusCode)
 	}
 
 	return nil
