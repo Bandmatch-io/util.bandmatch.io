@@ -23,6 +23,7 @@ func CreateHandler(path string, handler HandlerFunc, method string, requireLogin
 			if r != nil {
 				log.Msgf(log.V, "recovered from panic: %v", r)
 				stat.Atomic(stat.ServerErrors)
+				stat.Error(fmt.Errorf("recovered from panic: %v", r), req.Method, path)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()
@@ -31,6 +32,7 @@ func CreateHandler(path string, handler HandlerFunc, method string, requireLogin
 		if req.Method != method {
 			log.Msgf(log.VVV, "received request with invalid method")
 			stat.Atomic(stat.UserErrors)
+			stat.Error(fmt.Errorf("received request with invalid method"), req.Method, path)
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
@@ -44,6 +46,7 @@ func CreateHandler(path string, handler HandlerFunc, method string, requireLogin
 				log.Msgf(0, "received request with invalid user, err: %v", err)
 				w.WriteHeader(http.StatusUnauthorized)
 				stat.Atomic(stat.UnauthorizedErrors)
+				stat.Error(fmt.Errorf("received request with invalid user, err: %v", err), req.Method, path)
 				w.Write([]byte(`{"success":false,"error":{"login":{"absent":true}}}`))
 				return
 			}
@@ -80,6 +83,7 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 			if r != nil {
 				log.Msgf(log.V, "recovered from panic: %v", r)
 				stat.Atomic(stat.ServerErrors)
+				stat.Error(fmt.Errorf("recovered from panic: %v", r), req.Method, path)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()
@@ -102,6 +106,7 @@ func CreateAdminHandler(path string, handler HandlerFunc, method string) {
 			log.Msgf(0, "received request with invalid user, err: %v", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			stat.Atomic(stat.UnauthorizedErrors)
+			stat.Error(fmt.Errorf("received request with invalid user, err: %v", err), req.Method, path)
 			w.Write([]byte(`{"success":false,"error":{"login":{"absent":true}}}`))
 			return
 		}

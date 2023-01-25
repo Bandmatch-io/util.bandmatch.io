@@ -18,6 +18,7 @@ type Statistic struct {
 	Reports            int                 `bson:"reports" json:"reports"`
 	ServerErrors       int                 `bson:"serverErrors" json:"serverErrors"`
 	UserErrors         int                 `bson:"userErrors" json:"userErrors"`
+	AlertsSent         int                 `bson:"alertsSent" json:"alertsSent"`
 	UnauthorizedErrors int                 `bson:"unauthorizedErrors" json:"unauthorizedErrors"`
 	MatchCount         MatchCount          `bson:"matchCount" json:"matchCount"`
 	Timing             map[string]TimeData `bson:"endpointTiming" json:"endpointTiming"`

@@ -24,6 +24,7 @@ const (
 	ServerErrors       = 7
 	UserErrors         = 8
 	UnauthorizedErrors = 9
+	AlertsSent         = 10
 )
 
 var enumStatLookup = map[int]string{
@@ -37,6 +38,7 @@ var enumStatLookup = map[int]string{
 	ServerErrors:       "serverErrors",
 	UserErrors:         "userErrors",
 	UnauthorizedErrors: "unauthorizedErrors",
+	AlertsSent:         "alertsSent",
 }
 
 var (
@@ -143,7 +145,7 @@ func makeErrorRequest(stat errorData) error {
 	}
 
 	if resp.StatusCode != 202 {
-		return fmt.Errorf("did not receive 202 response")
+		return fmt.Errorf("did not receive 202 response for [%v] instead got [%v]", url, resp.StatusCode)
 	}
 
 	return nil
@@ -153,6 +155,11 @@ func makeErrorRequest(stat errorData) error {
 func Atomic(val int) {
 	if !open {
 		log.Msgf(1, "stat package is not running!!! will not send atomic!!!")
+		return
+	}
+
+	if _, ok := enumStatLookup[val]; !ok {
+		log.Msgf(0, "invalid stat [%v] !!! will not send atomic!!!", val)
 		return
 	}
 
